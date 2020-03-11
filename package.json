@@ -1,0 +1,20 @@
+{
+  "name": "yrbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^4.1.1",
+    "shelljs": "^0.8.3"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "jest": "^25.1.0"
+  }
+}
