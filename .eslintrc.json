@@ -12,28 +12,40 @@
         "test": true
     },
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2019
     },
     "rules": {
         "indent": [
             "error",
-            2
+            2,
+            {
+                "SwitchCase": 1
+            }
         ],
         "linebreak-style": [
             "error",
             "unix"
         ],
-        "quotes": [
-            "error",
-            "single"
-        ],
         "semi": [
-            "error",
+            "warn",
             "always"
         ],
         "curly": [
             2,
             "all"
-        ]
+        ],
+        "no-unreachable": "error",
+        "default-case": "warn",
+        "eqeqeq": "warn",
+        "no-extra-boolean-cast": "warn",
+        "no-extra-parens": "warn",
+        "no-duplicate-case": "warn",
+        "vars-on-top": "warn",
+        "no-shadow": "warn",
+        "eol-last": "warn",
+        "new-cap": "warn",
+        "no-multiple-empty-lines": "warn",
+        "no-lonely-if": "warn",
+        "no-trailing-spaces": "warn"
     }
 }
