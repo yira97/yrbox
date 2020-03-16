@@ -46,6 +46,7 @@
         "new-cap": "warn",
         "no-multiple-empty-lines": "warn",
         "no-lonely-if": "warn",
-        "no-trailing-spaces": "warn"
+        "no-trailing-spaces": "warn",
+        "no-catch-shadow": "error"
     }
 }
