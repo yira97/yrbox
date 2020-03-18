@@ -3,5 +3,5 @@
 ## run
 
 ```bash
-node .
+node . -h
 ```
