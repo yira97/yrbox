@@ -1,0 +1,39 @@
+{
+  "task1": {
+    "desc": "task1 desc",
+    "choice": {
+      "s1": {
+        "cmd": "echo s1",
+        "next": []
+      },
+      "s2": {
+        "cmd": "echo s2",
+        "next": [
+          "task1.s1"
+        ]
+      },
+      "s3": {
+        "cmd": "echo s3",
+        "next": [
+          "task1.s2"
+        ]
+      }
+    }
+  },
+  "task2": {
+    "multi_choice": {
+      "sa": {
+        "cmd": "echo sa",
+        "next": [
+          "task1.s3"
+        ]
+      },
+      "sb": {
+        "cmd": "echo sb",
+        "next": [
+          "task1.s3"
+        ]
+      }
+    }
+  }
+}
