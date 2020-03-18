@@ -1,8 +1,8 @@
 const program = require('commander');
-const lib = require('./index');
+const lib = require('../lib/routine');
 const chalk = require('chalk');
 var inquirer = require('inquirer');
-const e = require('../errors');
+const e = require('../lib/errors');
 const log = console.log;
 
 const prog = new program.Command();

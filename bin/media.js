@@ -1,9 +1,9 @@
 
 const program = require('commander');
-const lib = require('./index');
+const lib = require('../lib/media');
 const chalk = require('chalk');
-const e = require('../errors');
-const scale = require('../scale');
+const e = require('../lib/errors');
+const scale = require('../lib/scale');
 const shell = require('shelljs');
 const log = console.log;
 

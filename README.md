@@ -1,7 +1,13 @@
 # yrbox
 
+## install
+
+```bash
+npm install -g .
+```
+
 ## run
 
 ```bash
-node . -h
+box -h
 ```
