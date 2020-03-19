@@ -1,0 +1,88 @@
+# 获取sites列表
+GET http://localhost:3000/api/v1/sites?limit=5&offset=0
+Accept: application/json
+
+###
+
+# 获取sites名称列表
+GET http://localhost:3000/api/v1/sites/name
+Accept: application/json
+
+###
+
+# 创建site
+POST http://localhost:3000/api/v1/sites
+Content-Type: application/json
+
+{
+  "name": "github",
+  "url": [
+    "github.com"
+  ]
+}
+
+###
+
+# 添加几个url
+POST http://localhost:3000/api/v1/site/url--add?id=2
+Content-Type: application/json
+
+{
+  "url": ["repo.gitlab.com", "user.gitlab.com"]
+}
+
+###
+
+# 删除一个site
+DELETE http://localhost:3000/api/v1/site?id=1
+
+###
+
+# 删除site的几个url
+POST http://localhost:3000/api/v1/site/url--rm?id=2
+Content-Type: application/json
+
+{
+  "url": ["github.com"]
+}
+
+### 
+
+# 修改一个site的名称
+PUT http://localhost:3000/api/v1/site/name?id=2
+Content-Type: application/json
+
+{
+  "name": "gitlab"
+}
+
+
+###
+# 列出账号
+
+GET http://localhost:3000/api/v1/accounts?localhost:3000/api/v1/sites?limit=5&offset=0
+Accept: application/json
+
+###
+# 创建账号
+
+POST  http://localhost:3000/api/v1/accounts
+Content-Type: application/json
+
+{
+  "username":"cccccc",
+  "password":"33333",
+  "phone":"2222333332222",
+  "tag":["B"]
+}
+
+###
+# 修改账号信息
+# 路由的最后指出想要修改的字段, 同时body的key要存在这个字段名.
+# 通过将body中键的值设置为null可清除某个字段
+PUT http://localhost:3000/api/v1/account/tag?id=1
+Content-Type: application/json
+
+{
+  "tag":["ZZZZZZ"]  
+}
