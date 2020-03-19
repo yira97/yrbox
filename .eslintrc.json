@@ -12,18 +12,18 @@
         "test": true
     },
     "parserOptions": {
-        "ecmaVersion": 2019
+        "ecmaVersion": 2020
     },
     "rules": {
         "indent": [
-            "error",
+            "warn",
             2,
             {
                 "SwitchCase": 1
             }
         ],
         "linebreak-style": [
-            "error",
+            "warn",
             "unix"
         ],
         "semi": [
@@ -34,7 +34,7 @@
             2,
             "all"
         ],
-        "no-unreachable": "error",
+        "no-unreachable": "warn",
         "default-case": "warn",
         "eqeqeq": "warn",
         "no-extra-boolean-cast": "warn",
@@ -47,6 +47,8 @@
         "no-multiple-empty-lines": "warn",
         "no-lonely-if": "warn",
         "no-trailing-spaces": "warn",
-        "no-catch-shadow": "error"
+        "no-catch-shadow": "warn",
+        "comma-style": "warn",
+        "comma-spacing": "warn"
     }
 }

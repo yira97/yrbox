@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "node ./bin/box.js"
+    "start": "node ./bin/box.js",
+    "passwd-server": "node ./lib/passwd/app.js"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +15,14 @@
     "chalk": "^3.0.0",
     "commander": "^4.1.1",
     "inquirer": "^7.1.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^8.0.8",
+    "log4js": "^6.1.2",
     "pg": "^7.18.2",
-    "shelljs": "^0.8.3"
+    "sequelize": "^5.21.5",
+    "shelljs": "^0.8.3",
+    "sqlite3": "^4.1.1"
   },
   "bin": {
     "box": "./bin/box.js"
