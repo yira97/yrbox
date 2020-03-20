@@ -3,7 +3,7 @@ const lib = require('../lib/routine');
 const chalk = require('chalk');
 var inquirer = require('inquirer');
 const e = require('../lib/errors');
-const log = console.log;
+const { routineCli } = require('../lib/logger');
 
 const prog = new program.Command();
 prog
@@ -11,9 +11,9 @@ prog
   .option('-m --manual', '手动连接')
   .action(param => {
     if (param.manual) {
-      log(chalk.magenta('连接数据库[手动:PSQL]'));
+      routineCli.info(chalk.magenta('连接数据库[手动:PSQL]'));
     } else {
-      log(chalk.magenta('连接数据库[模拟:node-postgres]'));
+      routineCli.info(chalk.magenta('连接数据库[模拟:node-postgres]'));
     }
     const db_list = lib.list_database_config();
     inquirer
@@ -40,7 +40,7 @@ prog
   .command('ssh')
   .description('远程连接')
   .action(() => {
-    log(chalk.magenta('远程登陆...'));
+    routineCli.info(chalk.magenta('远程登陆...'));
     const ssh = lib.list_ssh_config();
     inquirer
       .prompt([
@@ -75,7 +75,7 @@ prog
       .then(ans => {
         const choice_list = lib.list_batch_task_choice(ans.task_name);
         if (choice_list.name.length === 0) {
-          log('该任务没有目标.\n');
+          routineCli.info('该任务没有目标.\n');
           process.exit(0);
         }
         inquirer
