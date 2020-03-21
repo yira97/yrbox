@@ -69,7 +69,7 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
     const f = process_list[i];
     const original_mega = byte_to_mega(lib.get_file_size(f), { fix: 0 });
     const f_after = lib.append_before_suffix(f, '.hevc');
-    mediaCli.info.info(`⛓️ 正在处理第 ${i + 1} / ${process_list.length} 个文件: ${chalk.underline(`${f}`)}`);
+    mediaCli.info(`⛓️ 正在处理第 ${i + 1} / ${process_list.length} 个文件: ${chalk.underline(`${f}`)}`);
 
     await lib.change_video_codec(f, {
       out: f_after,
@@ -79,7 +79,6 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
     });
     const generated_mega = byte_to_mega(lib.get_file_size(f_after), { fix: 0 });
     const ratio = (generated_mega / original_mega * 100).toFixed(1);
-    const sign = generated_mega < original_mega ? '-' : '+';
-    mediaCli.info.info(`    转码完成. 🗜️ ` + chalk.yellow(`${ratio}%`) + `(${sign}${original_mega - generated_mega}MB)`);
+    mediaCli.info(`    转码完成. 🗜️ ` + chalk.yellow(`${ratio}%`));
   }
 }
