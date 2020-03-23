@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const { byte_to_mega, Clock } = require('../lib/scale');
 const ora = require('ora');
 const { mediaCli } = require('../lib/logger');
+const { find_all_file_recursive, find_all_file } = require('../lib/file');
 
 const prog = new program.Command();
 prog
@@ -46,7 +47,7 @@ prog.parse(process.argv);
  * }} param0
  */
 async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
-  const get_file = recursive ? lib.find_all_file_recursive : lib.find_all_file;
+  const get_file = recursive ? find_all_file_recursive : find_all_file;
   const spin = ora().start('生成文件列表');
   let files = await get_file(root).then(res => {
     spin.succeed();
