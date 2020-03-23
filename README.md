@@ -69,7 +69,7 @@ $ box routine ssh
 
 配置在 lib/routine/setting 目录中
 
-#### (3) 常用命令一键连发
+#### (3) 一键常用命令
 
 例:
 
@@ -83,4 +83,15 @@ $ box routine batch
 
 ```bash
 $ npm run passwd-server
+```
+
+### 文件整理
+
+(1) 寻找重复文件
+
+例:
+
+```bash
+# 查找某路径下所有重复文件
+$ box file findup -d path/to/dir -r
 ```
