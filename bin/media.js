@@ -2,7 +2,7 @@
 const program = require('commander');
 const lib = require('../lib/media');
 const chalk = require('chalk');
-const { byte_to_mega } = require('../lib/scale');
+const { byte_to_mega, Clock } = require('../lib/scale');
 const ora = require('ora');
 const { mediaCli } = require('../lib/logger');
 
@@ -70,7 +70,7 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
     const original_mega = byte_to_mega(lib.get_file_size(f), { fix: 0 });
     const f_after = lib.append_before_suffix(f, '.hevc');
     mediaCli.info(`⛓️ 正在处理第 ${i + 1} / ${process_list.length} 个文件: ${chalk.underline(`${f}`)}`);
-
+    const clock = new Clock();
     await lib.change_video_codec(f, {
       out: f_after,
       code: 'hevc',
@@ -79,6 +79,10 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
     });
     const generated_mega = byte_to_mega(lib.get_file_size(f_after), { fix: 0 });
     const ratio = (generated_mega / original_mega * 100).toFixed(1);
-    mediaCli.info(`    转码完成. 🗜️ ` + chalk.yellow(`${ratio}%`));
+    mediaCli.info(`    转码完成. 🗜️ ` +
+      chalk.yellow(`${ratio}%`) +
+      chalk.green(` (${original_mega - generated_mega}MB)` +
+        chalk.white(` 用时${(clock.get_duration() / 1000).toFixed(0)}秒`)
+      ));
   }
 }
