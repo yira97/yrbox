@@ -1,5 +1,6 @@
 const program = require('commander');
 const { find_all_file_recursive, find_all_file, get_file_md5 } = require('../lib/file');
+const { parse_file_size_text } = require('../lib/scale');
 const chalk = require('chalk');
 const { temp, fileCmdLogger } = require('../lib/logger');
 
@@ -9,8 +10,10 @@ prog
   .description('查找目录下所有重复的文件')
   .requiredOption('-d --dir <path>', '起点目录')
   .option('-r --recursive', '递归对子目录做相同的操作')
+  .option('--min-size', '设置查找对象的最小体积')
   .action(param => {
-    find_dup_in_dir(param.dir, param.recursive);
+    const byte = parse_file_size_text(param.minSize);
+    find_dup_in_dir(param.dir, param.recursive, byte);
   });
 
 prog.parse(process.argv);
@@ -18,8 +21,9 @@ prog.parse(process.argv);
 /**
  * @param {string} root 起点
  * @param {boolean} recursive 是否递归子目录
+ * @param {number} minSize 最小字节数
  */
-async function find_dup_in_dir(root, recursive) {
+async function find_dup_in_dir(root, recursive, minSize) {
   const get_file = recursive ? find_all_file_recursive : find_all_file;
   // md5 string -> file path set
   const hash_file_dict = new Map();
