@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const { byte_to_mega, Clock } = require('../lib/scale');
 const ora = require('ora');
 const { mediaCli } = require('../lib/logger');
-const { find_all_file_recursive, find_all_file } = require('../lib/file');
+const { find_all_file_recursive, find_all_file, get_file_size } = require('../lib/file');
 
 const prog = new program.Command();
 prog
@@ -68,7 +68,7 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
   mediaCli.info(`- 文件数 : ${process_list.length}`);
   for (let i = 0; i < process_list.length; i++) {
     const f = process_list[i];
-    const original_mega = byte_to_mega(lib.get_file_size(f), { fix: 0 });
+    const original_mega = byte_to_mega(get_file_size(f), { fix: 0 });
     const f_after = lib.append_before_suffix(f, '.hevc');
     mediaCli.info(`⛓️ 正在处理第 ${i + 1} / ${process_list.length} 个文件: ${chalk.underline(`${f}`)}`);
     const clock = new Clock();
@@ -78,7 +78,7 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
       crf: crf,
       overrite: overrite,
     });
-    const generated_mega = byte_to_mega(lib.get_file_size(f_after), { fix: 0 });
+    const generated_mega = byte_to_mega(get_file_size(f_after), { fix: 0 });
     const ratio = (generated_mega / original_mega * 100).toFixed(1);
     mediaCli.info(`    转码完成. 🗜️ ` +
       chalk.yellow(`${ratio}%`) +

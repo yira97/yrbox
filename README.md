@@ -92,6 +92,6 @@ $ npm run passwd-server
 例:
 
 ```bash
-# 查找某路径下所有重复文件
-$ box file findup -d path/to/dir -r
+# 查找某路径下所有大于100M的重复文件
+$ box file findup -d path/to/dir -r --minsize 100m
 ```
