@@ -1,6 +1,7 @@
 const program = require('commander');
 const { find_all_file_recursive, find_all_file, get_file_md5 } = require('../lib/file');
 const chalk = require('chalk');
+const { temp, fileCmdLogger } = require('../lib/logger');
 
 const prog = new program.Command();
 prog
@@ -23,7 +24,7 @@ async function find_dup_in_dir(root, recursive) {
   // md5 string -> file path set
   const hash_file_dict = new Map();
   let files = await get_file(root).catch(err => {
-    console.log(chalk.redBright(err));
+    fileCmdLogger.info(chalk.redBright(err));
   });
   for (const file of files) {
     const hash = await get_file_md5(file);
@@ -39,8 +40,12 @@ async function find_dup_in_dir(root, recursive) {
   let dup_count = 0;
   hash_file_dict.forEach((file_set) => {
     if (file_set.size > 1) {
+      temp.info(chalk.yellow(`重复文件:`));
+      file_set.forEach(f => {
+        temp.info(`  - ${f}`);
+      });
+      temp.info(``);
       dup_count++;
-      console.log(file_set);
     }
   });
   console.log(`一共有 ${dup_count} / ${files.length} 组重复文件`);
