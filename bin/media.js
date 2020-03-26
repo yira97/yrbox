@@ -18,6 +18,7 @@ prog
   .option('--crf <crf>', 'crf', 34)
   .option('-y --yes', '直接同意')
   .option('-N --no', '直接不同意')
+  .option('--suffix <suffix>', '生成文件后缀')
   .action(param => {
     let overrite = 'i';
     if (param.yes) {
@@ -32,6 +33,7 @@ prog
       crf: param.crf,
       overrite: overrite,
       re: param.re,
+      out_suffix: param.suffix,
     });
   });
 
@@ -44,10 +46,11 @@ prog.parse(process.argv);
  *   recursive: boolean,
  *   crf: number,
  *   overrite: 'y' | 'N' | 'i',
- *   re: boolean
+ *   re: boolean,
+ *   out_suffix: string,
  * }} param0
  */
-async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
+async function trans_video_to_hevc({ root, recursive, crf, overrite, re, out_suffix }) {
   const get_file = recursive ? find_all_file_recursive : find_all_file;
   const spin = ora().start('生成文件列表');
   let files = await get_file(root).then(res => {
@@ -57,13 +60,13 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
   spin.start('确定转码文件');
   // 默认过滤所有隐藏文件
   let process_list = files.filter(f => path.basename(f).indexOf('.') !== 0);
+  // 对已经是hevc的文件再次压缩
   if (!re) {
     process_list = await lib.non_hevc_filter(process_list).then(res => {
       spin.succeed();
       return res;
     });
   } else {
-    process_list = process_list.filter(p => lib.has_video_suffix(p));
     spin.succeed();
   }
   mediaCli.info(`- CRF   : ${crf}`);
@@ -71,7 +74,16 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
   for (let i = 0; i < process_list.length; i++) {
     const f = process_list[i];
     const original_mega = byte_to_mega(get_file_size(f), { fix: 0 });
-    const f_after = lib.append_before_suffix(f, '.hevc');
+    let f_after, to_mp4_container;
+    // 如果指定输出后缀， 那么直接在文件名最后添加后缀
+    // 如果未指定输出后缀， 那么在文件名后缀名前添加.hevc, 并将容器格式转成MP4
+    if (out_suffix !== undefined) {
+      f_after = f + out_suffix;
+      to_mp4_container = false;
+    } else {
+      f_after = lib.append_before_suffix(f, '.hevc');
+      to_mp4_container = true
+    }
     mediaCli.info(`⛓️ 正在处理第 ${i + 1} / ${process_list.length} 个文件: ${chalk.underline(`${f}`)}`);
     const clock = new Clock();
     await lib.change_video_codec(f, {
@@ -79,6 +91,7 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
       code: 'hevc',
       crf: crf,
       overrite: overrite,
+      to_mp4_container: to_mp4_container,
     });
     const generated_mega = byte_to_mega(get_file_size(f_after), { fix: 0 });
     const ratio = (generated_mega / original_mega * 100).toFixed(1);
