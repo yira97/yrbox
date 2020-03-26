@@ -9,6 +9,8 @@ const this_dir = __dirname;
  */
 function init_test_dir(root) {
   const d = path.join(root, 'temp-for-test');
+  const clean = () => { fs.rmdirSync(d, { recursive: true }); };
+  clean();
   fs.mkdirSync(d);
   fs.mkdirSync(path.join(d, `t1`));
   fs.mkdirSync(path.join(d, `t2`));
@@ -22,7 +24,7 @@ function init_test_dir(root) {
   fs.writeFileSync(path.join(d, `t2`, `t3`, `m.json`), `some data`);
   return {
     path: d,
-    clean: () => { fs.rmdirSync(d, { recursive: true }); }
+    clean: clean,
   };
 }
 
@@ -77,11 +79,22 @@ test('test encrypt files 2', async () => {
   const test_dir = init_test_dir(this_dir);
   const encrypt_dir = path.join(test_dir.path);
   const key = 'hahaha';
-  const { file: files, iv } = await file.encrypt_directory_filename(encrypt_dir, true, key);
+  const suffix = '.encp';
+  const encrypt_res = await file.encrypt_directory_filename(encrypt_dir, true, key, suffix);
+  if (!encrypt_res) {
+    throw new Error('no encrypt result');
+  }
+  const { file: files, iv } = encrypt_res;
+  expect(files.length).toEqual(6);
+  files.forEach(f => {
+    expect(fs.existsSync(f.old)).toBe(false);
+    expect(fs.existsSync(f.new)).toBe(true);
+  });
+  const decrypted_filename = await file.decrypt_directory_filename(encrypt_dir, true, key, iv, suffix);
 
-  files.forEach(f => expect(f.old).toEqual(f.new));
-
-  const decrypted_filename = await file.get_decrypt_filename(files.map(f => f.new), key, iv);
+  // 因为加密后, 文件排序会发生变化, 导致返回后的文件顺序也有可能和初始文件顺序不同.
+  decrypted_filename.sort();
+  files.sort((a, b) => a.old < b.old);
   expect(decrypted_filename).toEqual(files.map(f => f.old));
 
   test_dir.clean();
