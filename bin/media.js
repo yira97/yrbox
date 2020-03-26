@@ -6,6 +6,7 @@ const { byte_to_mega, Clock } = require('../lib/scale');
 const ora = require('ora');
 const { mediaCli } = require('../lib/logger');
 const { find_all_file_recursive, find_all_file, get_file_size } = require('../lib/file');
+const path = require('path');
 
 const prog = new program.Command();
 prog
@@ -54,9 +55,10 @@ async function trans_video_to_hevc({ root, recursive, crf, overrite, re }) {
     return res;
   });
   spin.start('确定转码文件');
-  let process_list = files;
+  // 默认过滤所有隐藏文件
+  let process_list = files.filter(f => path.basename(f).indexOf('.') !== 0);
   if (!re) {
-    process_list = await lib.non_hevc_filter(files).then(res => {
+    process_list = await lib.non_hevc_filter(process_list).then(res => {
       spin.succeed();
       return res;
     });
