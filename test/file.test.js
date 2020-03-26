@@ -97,5 +97,5 @@ test('test encrypt files 2', async () => {
   files.sort((a, b) => a.old < b.old);
   expect(decrypted_filename).toEqual(files.map(f => f.old));
 
-  test_dir.clean();
+  // test_dir.clean();
 });

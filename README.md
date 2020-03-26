@@ -95,3 +95,14 @@ $ npm run passwd-server
 # 查找某路径下所有大于100M的重复文件
 $ box file findup -d path/to/dir -r --minsize 100m
 ```
+
+(2) 加密文件名
+
+例:
+
+```bash
+# 对 ~/Downloads/temp/yrbox/test/temp-for-test 目录下所有文件名称进行加密, 密码是 hahaha
+box file encpd -d ~/Downloads/temp/yrbox/test/temp-for-test -s hahaha -r
+# 对~/Downloads/temp/yrbox/test/temp-for-test 目录下所有文件名称进行解密, 密码是 hahaha, 同时输入刚才生成的附加密钥 61922697310a51bd3d335dc5bc9260d3
+box file decpd -d ~/Downloads/temp/yrbox/test/temp-for-test -s hahaha -r --iv 61922697310a51bd3d335dc5bc9260d3
+```

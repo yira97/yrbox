@@ -1,8 +1,9 @@
 const program = require('commander');
-const { find_all_file_recursive, find_all_file, get_file_md5, get_file_size } = require('../lib/file');
+const { find_all_file_recursive, find_all_file, get_file_md5, get_file_size, encrypt_directory_filename, decrypt_directory_filename } = require('../lib/file');
 const { parse_file_size_text, get_proper_size_str } = require('../lib/scale');
 const chalk = require('chalk');
 const { temp, fileCmdLogger } = require('../lib/logger');
+const shell = require('shelljs');
 
 const prog = new program.Command();
 prog
@@ -16,7 +17,56 @@ prog
     find_dup_in_dir(param.dir, param.recursive, byte);
   });
 
+prog
+  .command('encpd')
+  .description('加密文件名')
+  .requiredOption('-d --dir <path>', '起点目录')
+  .requiredOption('-s --secret <secret>', '密钥')
+  .option('-r --recursive', '递归对子目录做相同的操作')
+  .option('--suffix <suffix>', '加密后缀名', '.enc')
+  .action(param => {
+    encrypt_filename_cmd(param.dir, param.recursive, param.secret, param.suffix);
+  });
+
+prog
+  .command('decpd')
+  .description('解密文件名')
+  .requiredOption('-d --dir <path>', '起点目录')
+  .requiredOption('-s --secret <secret>', '密钥')
+  .requiredOption('--iv <iv>', '附加密钥')
+  .option('-r --recursive', '递归对子目录做相同的操作')
+  .option('--suffix <suffix>', '加密后缀名', '.enc')
+  .action(param => {
+    decrypt_filename_cmd(param.dir, param.recursive, param.secret, param.iv, param.suffix);
+  });
+
 prog.parse(process.argv);
+
+async function decrypt_filename_cmd(root, recursive, secret, iv, suffix) {
+  const decrypts = await decrypt_directory_filename(root, recursive, secret, iv, suffix);
+  temp.info(`解密成功. 一共 ${decrypts.length} 个文件.`);
+  decrypts.forEach(f => {
+    temp.info(f);
+  });
+}
+
+/**
+ * @param {string} root 起点
+ * @param {boolean} recursive 是否递归
+ * @param {string} secret 密钥
+ */
+async function encrypt_filename_cmd(root, recursive, secret, suffix) {
+  const encrypt_res = await encrypt_directory_filename(root, recursive, secret, suffix);
+  if (!encrypt_res) {
+    shell.exit();
+    return;
+  }
+  temp.info(chalk.magenta(`有 ${encrypt_res.file.length} 个文件进行了加密`));
+  encrypt_res.file.forEach(f => {
+    temp.info(`${f.old} --> ` + chalk.green(f.new));
+  });
+  temp.info(chalk.yellow(`请记住附加密钥, 将会在解密时输入:  `) + chalk.underline(encrypt_res.iv));
+}
 
 /**
  * @param {string} root 起点
